@@ -13,6 +13,10 @@ def lambda_handler(event, context):
 
         Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
 
+
+https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-run-lambda-schedule.html
+
+
     context: object, required
         Lambda Context runtime methods and attributes
 

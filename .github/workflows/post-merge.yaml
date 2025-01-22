@@ -31,7 +31,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
-          role-to-assume: arn:aws:iam::745159704268:role/sagebase-github-oidc-lambda-template-deploy-sageit
+          role-to-assume: arn:aws:iam::745159704268:role/sagebase-github-oidc-lambda-tag-patch-group-deploy-sageit
           role-session-name: GHA-${{ github.event.repository.name }}-${{ github.run_id }}  # Must not exceed 64 chars
           role-duration-seconds: 900
 
