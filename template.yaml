@@ -20,6 +20,15 @@ Globals:
   Function:
     Timeout: 30
 
+Parameters:
+  Schedule:
+    Description: >-
+      Schedule to execute the lambda, can be a rate or a cron schedule. Format at
+      https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+    Type: String
+    Default: cron(0 2 * * ? *)  # Run at 2am every night
+    ConstraintDescription: "Use schedule format: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html"
+
 Resources:
   TaggerFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -33,6 +42,28 @@ Resources:
           Type: Schedule # More info about Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#schedule
           Properties:
             Schedule: !Ref Schedule
+            # JSON data to be added to the event, used for site configuration
+            # TODO: prod values
+            Input: |-
+              {
+                "tags": {
+                  "ManagedInstanceMaintenanceTarget": "test",
+                  "PatchGroup": "test-default"
+                }
+              }
+  FunctionPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowTagging
+            Effect: Allow
+            Resource: '*'
+            Action:
+              - ec2:*Tag*
+              - rds:*Tag*
+              - ssm:*Tag*
 
   FunctionRole:   # execute lambda function with this role
     Type: AWS::IAM::Role
@@ -48,6 +79,7 @@ Resources:
               - sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - !Ref FunctionPolicy
 
 Outputs:
   TaggerFunctionArn:

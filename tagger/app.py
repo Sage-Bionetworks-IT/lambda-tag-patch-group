@@ -1,7 +1,18 @@
-import json
+import logging
 
-# import requests
-
+Config = {
+    "resource_types": [
+        "AWS::DMS::ReplicationInstance",
+        "AWS::EC2::Instance",
+        "AWS::EC2::ReservedInstance",
+        "AWS::ECS::ContainerInstance",
+        "AWS::OpsWorks::Instance",
+        "AWS::RDS::DBInstance",
+        "AWS::RDS::ReservedDBInstance",
+        "AWS::SSM::ManagedInstance",
+        "AWS::SageMaker::NotebookInstance",
+    ]
+}
 
 def lambda_handler(event, context):
     """Sample pure Lambda function
@@ -9,38 +20,24 @@ def lambda_handler(event, context):
     Parameters
     ----------
     event: dict, required
-        API Gateway Lambda Proxy Input Format
+        EventBridge Input Format
 
         Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
-
-
-https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-run-lambda-schedule.html
-
+        https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-run-lambda-schedule.html
 
     context: object, required
         Lambda Context runtime methods and attributes
 
         Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
-
-    Returns
-    ------
-    API Gateway Lambda Proxy Output Format: dict
-
-        Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
 
-    # try:
-    #     ip = requests.get("http://checkip.amazonaws.com/")
-    # except requests.RequestException as e:
-    #     # Send some context about this error to Lambda Logs
-    #     print(e)
+    try:
+        logging.basicConfig(level=logging.DEBUG)
+        logging.info(f"Config: {Config}")
+        logging.info(f"Event: {event}")
+        logging.info(f"Context: {context}")
+    except Exception as exc:
+        logging.exception(exc)
 
-    #     raise e
-
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "hello world",
-            # "location": ip.text.replace("\n", "")
-        }),
-    }
+    # Any return value will be discarded by Event Bridge
+    # https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html#python-handler-return

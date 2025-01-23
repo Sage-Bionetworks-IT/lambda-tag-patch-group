@@ -1,0 +1,4 @@
+# sam validate --lint doesn't recognize python3.12 as valid
+# but it's listed at https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+ignore_checks:
+  - E3030  
