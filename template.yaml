@@ -39,17 +39,32 @@ Resources:
       Role: !GetAtt FunctionRole.Arn
       Events:
         Schedule:
-          Type: Schedule # More info about Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#schedule
+          # More info about Event Source:
+          # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#schedule
+          Type: Schedule
           Properties:
             Schedule: !Ref Schedule
-            # JSON data to be added to the event, used for site configuration
-            # TODO: prod values
+            # JSON data passed to the lambda function as 'event',
+            # The resource types should match ResourceTypeFilters at
+            # https://github.com/Sage-Bionetworks-IT/organizations-infra/blob/master/org-formation/090-systems-manager/patch-resource-group.yaml
+            # TODO: prod tag values
             Input: |-
               {
                 "tags": {
                   "ManagedInstanceMaintenanceTarget": "test",
                   "PatchGroup": "test-default"
-                }
+                },
+                "resource_types": [
+                  "dms:rep",
+                  "ec2:instance",
+                  "ec2:reserved-instances",
+                  "ecs:container-instance",
+                  "opsworks:stack",
+                  "rds:db",
+                  "rds:ri",
+                  "sagemaker:notebook-instance",
+                  "ssm:managed-instance"
+                ]
               }
   FunctionPolicy:
     Type: AWS::IAM::ManagedPolicy
@@ -60,7 +75,8 @@ Resources:
           - Sid: AllowTagging
             Effect: Allow
             Resource: '*'
-            Action:
+            Action:  # TODO: all resource types
+              - tag:GetResources
               - ec2:*Tag*
               - rds:*Tag*
               - ssm:*Tag*

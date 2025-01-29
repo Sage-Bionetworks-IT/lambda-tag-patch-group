@@ -1,18 +1,38 @@
 import logging
 
-Config = {
-    "resource_types": [
-        "AWS::DMS::ReplicationInstance",
-        "AWS::EC2::Instance",
-        "AWS::EC2::ReservedInstance",
-        "AWS::ECS::ContainerInstance",
-        "AWS::OpsWorks::Instance",
-        "AWS::RDS::DBInstance",
-        "AWS::RDS::ReservedDBInstance",
-        "AWS::SSM::ManagedInstance",
-        "AWS::SageMaker::NotebookInstance",
-    ]
-}
+import boto3
+
+
+LOG = logging.getLogger(__name__)
+LOG.setLevel(logging.DEBUG)
+
+
+tag_client = boto3.client('resourcegroupstaggingapi')
+
+
+def find_resources(r_types):
+    """
+    list of resource types
+    """
+    arns = []
+    pager = tag_client.get_paginator('get_resources')
+
+    for page in pager.paginate(ResourceTypeFilters=r_types):
+        r_list = page['ResourceTagMappingList']
+        for tag_map in r_list:
+            arn = tag_map['ResourceARN']
+            LOG.debug(f"ARN: {arn}")
+            arns.append(arn)
+
+    return arns
+
+
+def tag_resources(tags, arns):
+    """
+    event tags, resource list
+    """
+    raise NotImplementedError
+
 
 def lambda_handler(event, context):
     """Sample pure Lambda function
@@ -32,12 +52,15 @@ def lambda_handler(event, context):
     """
 
     try:
-        logging.basicConfig(level=logging.DEBUG)
-        logging.info(f"Config: {Config}")
-        logging.info(f"Event: {event}")
-        logging.info(f"Context: {context}")
+        LOG.debug(f"Event: {event}")
+        tags = event['tags']
+        r_types = event['resource_types']
+        found = find_resources(r_types)
+        LOG.info(f"Tagging resources: {found}")
+        tag_resources(tags, found)
     except Exception as exc:
-        logging.exception(exc)
+        LOG.exception(exc)
+        raise
 
     # Any return value will be discarded by Event Bridge
     # https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html#python-handler-return
