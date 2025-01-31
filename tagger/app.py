@@ -21,7 +21,6 @@ def find_resources(r_types):
         r_list = page['ResourceTagMappingList']
         for tag_map in r_list:
             arn = tag_map['ResourceARN']
-            LOG.debug(f"ARN: {arn}")
             arns.append(arn)
 
     return arns

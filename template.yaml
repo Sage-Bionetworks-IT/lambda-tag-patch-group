@@ -83,6 +83,7 @@ Resources:
               - sagemaker:*Tag*
               - ssm:*Tag*
               - tag:GetResources
+              - tag:TagResources
 
   FunctionRole:   # execute lambda function with this role
     Type: AWS::IAM::Role
