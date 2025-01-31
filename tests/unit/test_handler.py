@@ -1,7 +1,4 @@
-import json
-
 import pytest
-import boto3
 from botocore.stub import Stubber
 
 from tagger import app
