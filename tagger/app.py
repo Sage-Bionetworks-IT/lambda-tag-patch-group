@@ -31,7 +31,11 @@ def tag_resources(tags, arns):
     """
     event tags, resource list
     """
-    raise NotImplementedError
+    result = tag_client.tag_resources(ResourceARNList=arns, Tags=tags)
+    if result.get('FailedResourcesMap', {}) != {}:
+        LOG.error("Failed to tag some resources")
+        LOG.error(result)
+        raise RuntimeError(result)
 
 
 def lambda_handler(event, context):

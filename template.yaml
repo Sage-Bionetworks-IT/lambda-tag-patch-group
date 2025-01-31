@@ -45,14 +45,13 @@ Resources:
           Properties:
             Schedule: !Ref Schedule
             # JSON data passed to the lambda function as 'event',
-            # The resource types should match ResourceTypeFilters at
+            # The resource types need to match `ResourceTypeFilters` at
             # https://github.com/Sage-Bionetworks-IT/organizations-infra/blob/master/org-formation/090-systems-manager/patch-resource-group.yaml
-            # TODO: prod tag values
             Input: |-
               {
                 "tags": {
-                  "ManagedInstanceMaintenanceTarget": "test",
-                  "PatchGroup": "test-default"
+                  "ManagedInstanceMaintenanceTarget": "yes",
+                  "PatchGroup": "prod-default"
                 },
                 "resource_types": [
                   "dms:rep",
@@ -75,11 +74,15 @@ Resources:
           - Sid: AllowTagging
             Effect: Allow
             Resource: '*'
-            Action:  # TODO: all resource types
-              - tag:GetResources
+            Action:
+              - dms:*Tag*
               - ec2:*Tag*
+              - ecs:*Tag*
+              - opsworks:*Tag*
               - rds:*Tag*
+              - sagemaker:*Tag*
               - ssm:*Tag*
+              - tag:GetResources
 
   FunctionRole:   # execute lambda function with this role
     Type: AWS::IAM::Role
