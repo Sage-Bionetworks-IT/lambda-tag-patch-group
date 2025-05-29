@@ -31,11 +31,11 @@ def tag_resources(tags, arns):
     event tags, resource list
     """
     result = tag_client.tag_resources(ResourceARNList=arns, Tags=tags)
-    if result.get('FailedResourcesMap', {}) != {}:
+    LOG.debug(f"Tagged resources: {result}")
+    failed = result.get('FailedResourcesMap', {})
+    if failed != {}:
         LOG.error("Failed to tag some resources")
-        LOG.error(result)
-        raise RuntimeError(result)
-
+        raise RuntimeError(failed)
 
 def lambda_handler(event, context):
     """Sample pure Lambda function

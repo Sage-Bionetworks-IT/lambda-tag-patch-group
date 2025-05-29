@@ -59,6 +59,7 @@ Resources:
                   "ec2:reserved-instances",
                   "ecs:container-instance",
                   "opsworks:stack",
+                  "rds:cluster",
                   "rds:db",
                   "rds:ri",
                   "sagemaker:notebook-instance",
