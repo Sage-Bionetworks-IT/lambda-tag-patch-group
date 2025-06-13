@@ -1,11 +1,5 @@
 # lambda-tag-patch-group
-A GitHub template for quickly starting a new AWS lambda project.
-
-## Naming
-Naming conventions:
-* for a vanilla Lambda: `lambda-<context>`
-* for a Cloudformation Transform macro: `cfn-macro-<context>`
-* for a Cloudformation Custom Resource: `cfn-cr-<context>`
+An AWS Lambda to tag all resources in an account for inclusion in an SSM Patch Group
 
 ## Development
 

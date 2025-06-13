@@ -7,7 +7,7 @@ LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)
 
 
-tag_client = boto3.client('resourcegroupstaggingapi', 'us-east-1')
+tag_client = boto3.client('resourcegroupstaggingapi')
 
 
 def find_resources(r_types):
